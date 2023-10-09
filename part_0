@@ -1,0 +1,73 @@
+Exercise 0.4
+  sequence Diagram
+    browser ->> server: POST
+    https://studies.cs.helsinki.fi/exampleapp/new_note
+    activate server
+    browser ->> server: JSON Data
+    server: Update notes list
+    
+    browser ->> server: GET
+    https://studies.cs.helsinki.fi/exampleapp/notes
+    activate server
+    server ->> browser: HTML document
+
+    browser ->> server: GET
+    https://studies.cs.helsinki.fi/exampleapp/main.css
+    activate server
+    server ->> browser: the css file
+
+    browser ->> server: GET
+    https://studies.cs.helsinki.fi/exampleapp/main.js
+    activate server
+    server ->> browser: the Javascript file
+
+    browser ->> server: GET
+    https://studies.cs.helsinki.fi/exampleapp/data.json
+    activate server
+    server ->> browser: [{content: "ok", date: "2023-10-09T07:19:49.424Z"}, {content: "t", date: "2023-10-09T07:30:08.566Z"},…]
+    deactivate server
+
+
+
+  Exercise 0.5
+    sequence Diagram
+      browser ->> server: GET
+      https://studies.cs.helsinki.fi/exampleapp/spa
+      activate server
+      server ->> browser: HTML document
+
+      browser ->> server: GET
+      https://studies.cs.helsinki.fi/exampleapp/main.css
+      activate server
+      server ->> browser: CSS file
+
+      browser ->> server: GET
+      https://studies.cs.helsinki.fi/exampleapp/spa.js
+      activate server
+      server ->> browser: the Javascript file
+    
+      browser ->> server: GET
+      https://studies.cs.helsinki.fi/exampleapp/data.json
+      activate server
+      server ->> browser: [{content: "t", date: "2023-10-09T07:30:08.566Z"},…]
+      deactivate server
+
+
+
+    Exercise 0.6
+      sequence diagram
+
+      browser: renders new note on page
+      
+      browser ->> server: POST
+      https://studies.cs.helsinki.fi/exampleapp/new_note_s
+      activate server
+      browser ->> server: JSON content: {
+    "content": "If you are going through hell, keep going.",
+    "date": "2023-10-09T13:48:27.237Z"
+}
+      server ->> browser: 201 response: {"message":"note created"}
+
+      
+      
+      
