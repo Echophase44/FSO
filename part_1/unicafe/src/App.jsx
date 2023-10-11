@@ -6,19 +6,41 @@ const Button = ({handleClick, text}) => {
   )
 }
 
-const Stats = ({names, good, bad, neutral, total}) => {
-  let average = (good - bad) / total
-  let positive = (good / total) * 100
+const StatisticLine = ({text, value}) => {
   return (
-    <>
-      <div>{names[0]}: {good}</div>
-      <div>{names[1]}: {neutral}</div>
-      <div>{names[2]}: {bad}</div>
-      <div>All: {total}</div>
-      <div>Average: {isNaN(average) ? 0 : average}</div>
-      <div>Positive: {isNaN(positive) ? 0 : positive}%</div>
-    </>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
   )
+}
+
+const Stats = ({names, good, bad, neutral, total}) => {
+  let average = 0
+  let positive = 0
+
+  if (total !== 0){
+    average = (good - bad) / total
+    positive = (good / total) * 100
+  }
+
+  if (total === 0){
+    return (
+        <div>No Feedback Given Yet</div>
+      )
+    } else {
+      return (
+        <table>
+          <tbody>
+            <StatisticLine text={names[0]} value={good}/>
+            <StatisticLine text={names[1]} value={neutral}/>
+            <StatisticLine text={names[2]} value={bad}/>
+            <StatisticLine text={"All"} value={total}/>
+            <StatisticLine text={"Average"} value={average}/>
+            <StatisticLine text={"Positive"} value={positive}/>
+          </tbody>
+        </table>
+    )}
 }
 
 const App = () => {
