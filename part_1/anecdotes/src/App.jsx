@@ -13,11 +13,40 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
+  const [mostPopular, setMostPopular] = useState(0)
+
+  function updateMostPopular(copy) {
+    let popular = Math.max(...copy)
+    setMostPopular([...copy].indexOf(popular))
+  }
+
+  function updateSelected() {
+    let newSelection = Math.floor(Math.random() * (anecdotes.length))
+    setSelected(newSelection)
+  }
+
+  function updatePoints(vote){
+    const copy = [...points]
+    copy[vote] += 1
+    setPoints(copy)
+    updateMostPopular(copy)
+  }
 
   return (
-    <div>
-      {anecdotes[selected]}
-    </div>
+    <>
+    <h1>Anecdote of the day</h1>
+      <div>
+        {anecdotes[selected]}
+      </div>
+      <div>has {points[selected]} votes</div>
+      <button onClick={() => updatePoints(selected)}>votes</button>
+      <button onClick={updateSelected}>next anecdote</button>
+
+      <h2>Anecdote with most votes</h2>
+      <div>{anecdotes[mostPopular]}</div>
+      <div>has {points[mostPopular]} votes</div>
+    </>
   )
 }
 
