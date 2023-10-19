@@ -3,6 +3,7 @@ import Person from './components/Person'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import personService from './services/persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -10,6 +11,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [subFilter, setSubFilter] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [message, setMessage] = useState(null)
+  const [isError, setIsError] = useState(false)
 
   useEffect(() => {
     // axios.get('http://localhost:3001/persons').then(response => {
@@ -59,11 +62,12 @@ const App = () => {
             setPersons(persons.map(person => person.id !== element.id ? person : returnedPerson))
             setNewPerson("")
             setNewNumber("")
+            sendMessage(`${personObject.name}'s phone number has been updated.`)
           })
         }} else if(element.name === personObject.name){
         shouldAdd = false
         setNewPerson("")
-        alert(`${personObject.name} is already added to the phonebook`)
+        sendMessage(`${personObject.name} is already added to the phonebook.`)
       }
     })
     
@@ -74,20 +78,39 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewPerson("")
           setNewNumber("")
+          sendMessage(`Added ${personObject.name}.`)
       })
     }
+  }
+
+  const sendMessage = (message) => {
+    setMessage(message)
+    setTimeout(() => {
+      setMessage(null)
+      setIsError(false)
+    }, 4000)
   }
 
   const removePerson = (name, id) => {
     if (window.confirm(`Delete ${name}?`)) {
       personService.remove(id)
-      setPersons(persons.filter((person) => person.id !== id))
+        .then(returnObject => {
+          setPersons(persons.filter((person) => person.id !== id))
+          sendMessage(`Removed ${name}.`)
+        })
+        .catch(error => {
+          setIsError(true)
+          sendMessage(`${name} has already been removed from the server.`)
+        })
+      
+      
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message = {message} isError = {isError}/>
       <Filter 
         subFilter={subFilter}
         handleShown={handleShown}
