@@ -13,7 +13,7 @@ const App = () => {
     noteService
       .getAll()
       .then(initialNotes => {
-      setNotes(initialNotes)
+        setNotes(initialNotes)
       })
   }, [])
 
