@@ -1,15 +1,13 @@
-const Country = ({countriesToShow}) => {
-  //capital, area, languages, flag
+const Country = ({countriesToShow, getWeather}) => {
   let langArray = []
   let country = countriesToShow[0]
   let name = country.name.common
   let capital = country.capital[0]
   let area = country.area
-  let languages = country.languages
-  Object.values(languages).forEach((lang) => {
+  Object.values(country.languages).forEach((lang) => {
     langArray.push(lang)
   })
-  console.log(country)
+  getWeather(capital)
   return (
     <>
       <h1>{name}</h1>
