@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import Countries from './components/countries'
+import Countries from './components/Countries'
 import Country from './components/Country'
 
 function App() {
@@ -27,10 +27,18 @@ function App() {
     setSubFilter(event.target.value)
   }
 
+  const nameSearch = (name) => {
+    axios
+      .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
+      .then(response => {
+        setSubFilter(response.data.name.common)
+      })
+  }
+
   return (
     <>
       <div>find countries<input onChange={search}/></div>
-      {countriesToShow.length === 1 ? <Country countriesToShow = {countriesToShow}/> : <Countries countriesToShow = {countriesToShow}/>}
+      {countriesToShow.length === 1 ? <Country countriesToShow = {countriesToShow}/> : <Countries countriesToShow = {countriesToShow} nameSearch = {nameSearch}/>}
       
     </>
   )
