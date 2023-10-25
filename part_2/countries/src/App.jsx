@@ -7,9 +7,10 @@ import Country from './components/Country'
 function App() {
   const [countries, setCountries] = useState(null)
   const [subFilter, setSubFilter] = useState('')
+  const [weatherData, setWeatherdata] = useState({temperature: "", icon: "", windSpeed: "" })
 
   const countriesToShow = countries?.filter(element => element.name.common.toLowerCase().includes(subFilter.toLowerCase()))
-  const api_key = import.meta.env.VITE_API_KEY
+  const API_KEY = import.meta.env.VITE_API_KEY
   
 
   useEffect(() => {
@@ -34,20 +35,29 @@ function App() {
       .get(`https://studies.cs.helsinki.fi/restcountries/api/name/${name}`)
       .then(response => {
         setSubFilter(response.data.name.common)
-        console.log(response.data)
       })
   }
 
   const getWeather = (cityName) => {
-    console.log(cityName)
-    // api_key
-    //https://api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+    axios
+      .get(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=imperial`)
+      .then(response => {
+        const newData = {
+          temperature: response.data.main.temp,
+          icon: response.data.weather[0].icon,
+          windSpeed: response.data.wind.speed
+        }
+        setWeatherdata(newData)
+      })
+    
   }
 
   return (
     <>
       <div>find countries<input onChange={search}/></div>
-      {countriesToShow.length === 1 ? <Country countriesToShow = {countriesToShow} getWeather = {getWeather}/> : <Countries countriesToShow = {countriesToShow} nameSearch = {nameSearch}/>}
+      {countriesToShow.length === 1 ? 
+      <Country countriesToShow = {countriesToShow} getWeather = {getWeather} weatherData = {weatherData}/> : 
+      <Countries countriesToShow = {countriesToShow} nameSearch = {nameSearch}/>}
       
     </>
   )

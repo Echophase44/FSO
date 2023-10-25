@@ -1,4 +1,6 @@
-const Country = ({countriesToShow, getWeather}) => {
+import { useEffect } from "react"
+
+const Country = ({countriesToShow, getWeather, weatherData}) => {
   let langArray = []
   let country = countriesToShow[0]
   let name = country.name.common
@@ -7,7 +9,11 @@ const Country = ({countriesToShow, getWeather}) => {
   Object.values(country.languages).forEach((lang) => {
     langArray.push(lang)
   })
-  getWeather(capital)
+
+  useEffect(() => {
+    getWeather(capital)
+  }, [capital])
+
   return (
     <>
       <h1>{name}</h1>
@@ -18,6 +24,10 @@ const Country = ({countriesToShow, getWeather}) => {
         {langArray.map(lang => <li key = {lang}>{lang}</li>)}
       </ul>
       <img src={country.flags.png} alt={country.flags.alt} />
+      <h2>Weather in {capital}</h2>
+      <p>temperature: {weatherData.temperature} Fahrenheit</p>
+      {weatherData.icon === "" ? <></> : <img src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`} />}
+      <p>Wind {weatherData.windSpeed} mph</p>
     </>
   )
 }
