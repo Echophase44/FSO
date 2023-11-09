@@ -83,7 +83,7 @@ app.get("/api/notes/:id", (request, response, next) => {
 // });
 
 app.delete("/api/notes/:id", (request, response, next) => {
-  Note.findByIdAndRemove(request.param.id)
+  Note.findByIdAndDelete(request.param.id)
     .then((result) => {
       response.status(204).end();
     })
