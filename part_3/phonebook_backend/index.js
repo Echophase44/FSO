@@ -24,9 +24,7 @@ app.get("/api/persons", (request, response) => {
 });
 
 // create new person
-app.post("/api/persons", (request, response) => {
-  console.log("Received");
-  console.log(request.body.name, request.body.number);
+app.post("/api/persons", (request, response, next) => {
   const body = request.body;
 
   if (body.name === undefined || body.number === undefined) {
@@ -38,9 +36,14 @@ app.post("/api/persons", (request, response) => {
     number: body.number,
   });
 
-  person.save().then((savedPerson) => {
-    response.json(savedPerson);
-  });
+  const error = person.validateSync();
+
+  person
+    .save()
+    .then((savedPerson) => {
+      response.json(savedPerson);
+    })
+    .catch((error) => next(error));
 });
 
 //delete person
@@ -55,27 +58,33 @@ app.delete("/api/persons/:id", (request, response) => {
 });
 
 //Update person
-app.put("/api/persons/:id", (request, response) => {
-  const body = request.body;
+app.put("/api/persons/:id", (request, response, next) => {
+  const { name, number } = request.body;
+  // const person = {
+  //   name: name,
+  //   number: number,
+  // };
 
-  const person = {
-    name: body.name,
-    number: body.number,
-  };
+  // Person.findByIdAndUpdate(request.params.id, person, { new: true })
 
-  console.log(person);
-
-  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+  Person.findByIdAndUpdate(
+    request.params.id,
+    { name, number },
+    { new: true, runValidators: true, context: "query" }
+  )
     .then((updatedPerson) => {
       response.json(updatedPerson);
     })
     .catch((error) => next(error));
+
+  Person.schema.path("number").validate(function (number) {
+    return /^[0-9]{2,3}-[0-9]{1,}$/.test(number);
+  }, "This number doesn't work for me.");
 });
 
 //Info
 app.get("/info", (request, response) => {
   const date = Date();
-  console.log(request);
   Person.find({}).then((people) => {
     response.send(
       `<p>Phonebook has info for ${people.length} people.</p> <p>${date}</p>`
@@ -84,7 +93,7 @@ app.get("/info", (request, response) => {
 });
 
 //Find single person
-app.get("/api/persons/:id", (request, response) => {
+app.get("/api/persons/:id", (request, response, next) => {
   Person.findById(request.params.id)
     .then((person) => {
       if (person) {
@@ -101,6 +110,8 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
