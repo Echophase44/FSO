@@ -64,6 +64,9 @@ const App = () => {
             setNewNumber("")
             sendMessage(`${personObject.name}'s phone number has been updated.`)
           })
+          .catch(error => {
+            sendMessage(error.response.data.error)
+          })
         }} else if(element.name === personObject.name){
         shouldAdd = false
         setNewPerson("")
@@ -79,6 +82,9 @@ const App = () => {
           setNewPerson("")
           setNewNumber("")
           sendMessage(`Added ${personObject.name}.`)
+      })
+      .catch(error => {
+        sendMessage(error.response.data.error)
       })
     }
   }
