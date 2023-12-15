@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static("dist"));
 
-morgan.token("data", function (req, res) {
+morgan.token("data", function (req) {
   return JSON.stringify(req.body);
 });
 
@@ -36,7 +36,7 @@ app.post("/api/persons", (request, response, next) => {
     number: body.number,
   });
 
-  const error = person.validateSync();
+  //const error = person.validateSync();
 
   person
     .save()
@@ -49,7 +49,7 @@ app.post("/api/persons", (request, response, next) => {
 //delete person
 app.delete("/api/persons/:id", (request, response) => {
   Person.findByIdAndDelete(request.params.id)
-    .then((result) => {
+    .then(() => {
       response.status(204).end();
     })
     .catch((error) => {
