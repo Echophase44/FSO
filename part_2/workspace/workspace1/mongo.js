@@ -32,7 +32,7 @@
 // The object {} in here: .find({}) refers to the search conditions. Note.find({important: true}) is another search condition we can set.
 Note.find({}).then((result) => {
   result.forEach((note) => {
-    console.log(note);
-  });
-  mongoose.connection.close();
-});
+    console.log(note)
+  })
+  mongoose.connection.close()
+})
